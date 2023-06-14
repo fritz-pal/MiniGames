@@ -1,9 +1,11 @@
-name: Chess
+name: MiniGames
 version: 1.0
 author: fritzpal
-api-version: 1.16
-main: me.fritzpal.minecraftChess.Main
+api-version: 1.19
+main: me.fritzpal.miniGames.Main
 commands:
-  chess:
-    description: Start a game of chess
-    usage: /chess <whitePlayer> <blackPlayer>
+  minigame:
+    description: Start a minigame of your choice
+    usage: /minigame <roll_out/door_dash/jump_club>
+    permission-message: You do not have permission to use this command!
+    permission: minigame.start

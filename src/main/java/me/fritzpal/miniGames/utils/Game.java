@@ -1,2 +1,7 @@
-package me.fritzpal.miniGames;public interface Game {
+package me.fritzpal.miniGames.utils;
+
+public interface Game {
+    void teleportPlayers();
+    void setup();
+    void start();
 }

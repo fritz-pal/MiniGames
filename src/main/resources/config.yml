@@ -1,5 +1,4 @@
-bordlocations:
-
-playerElos:
-
-playerRatingDeviation:
+gameLocations:
+  door_dash:
+  jump_club:
+  roll_out:
