@@ -2,7 +2,10 @@ package me.fritzpal.miniGames;
 
 import me.fritzpal.miniGames.utils.Game;
 import org.bukkit.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -15,7 +18,6 @@ public class JumpClub implements Game {
     private final Main plugin;
     private final Location center;
     private final List<Player> alive = new ArrayList<>();
-    private boolean started = false;
     private boolean topBarEnabled = false;
     private boolean topBarDamage = false;
     private double speedBottom = 90;
@@ -52,6 +54,9 @@ public class JumpClub implements Game {
     public void setup() {
         for (Player all : plugin.getServer().getOnlinePlayers()) {
             all.getInventory().clear();
+            all.setHealth(20);
+            all.setFoodLevel(20);
+            all.setExp(0);
             all.setGameMode(GameMode.ADVENTURE);
         }
 
@@ -59,7 +64,7 @@ public class JumpClub implements Game {
             double t0 = 0, t1 = 0;
 
             public void run() {
-                if(cancel) {
+                if (cancel) {
                     cancel();
                     return;
                 }
@@ -70,9 +75,7 @@ public class JumpClub implements Game {
                     double x = r * Math.sin(t0);
                     double z = r * Math.cos(t0);
                     center.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, center.clone().add(x, 0.3, z), 3, 0.2, 0.2, 0.2, 0);
-                    if (!started) continue;
                     for (Player all : plugin.getServer().getOnlinePlayers()) {
-                        if (!alive.contains(all)) continue;
                         if (all.getLocation().distance(center.clone().add(x, 0, z)) < 1) {
                             eliminate(all);
                         }
@@ -87,7 +90,6 @@ public class JumpClub implements Game {
                     center.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, center.clone().add(x, 2, z), 3, 0.2, 0.2, 0.2, 0);
                     if (!topBarDamage) continue;
                     for (Player all : plugin.getServer().getOnlinePlayers()) {
-                        if (!alive.contains(all)) continue;
                         if (all.isSneaking() && all.isOnGround()) continue;
                         if (all.getLocation().distance(center.clone().add(x, 1, z)) < 1.5) {
                             eliminate(all);
@@ -98,7 +100,8 @@ public class JumpClub implements Game {
         }.runTaskTimer(plugin, 0, 1);
     }
 
-    private void eliminate(Player p) {
+    public void eliminate(Player p) {
+        if (!alive.contains(p)) return;
         p.setGameMode(GameMode.SPECTATOR);
         alive.remove(p);
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_HURT, 1, 1);
@@ -108,31 +111,57 @@ public class JumpClub implements Game {
     }
 
     private void endGame(Player winner) {
+        alive.clear();
         Bukkit.broadcastMessage("§a" + winner.getName() + " §7won the game!");
         for (Player all : plugin.getServer().getOnlinePlayers()) {
             all.playSound(all.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-            all.sendTitle("§a§lWINNER", "§a" + winner.getName() + " §7won the game!", 10, 50, 20);
-            all.removePotionEffect(PotionEffectType.JUMP);
-            all.setGameMode(GameMode.SURVIVAL);
-            all.teleport(center.getWorld().getSpawnLocation());
+            all.sendTitle("§a§l" + winner.getName(), "§7won the game!", 10, 50, 20);
         }
-        cancel = true;
-        plugin.setRunningGame(null);
+        spawnFireworks();
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player all : plugin.getServer().getOnlinePlayers()) {
+                    all.removePotionEffect(PotionEffectType.JUMP);
+                    all.setGameMode(GameMode.SURVIVAL);
+                    all.teleport(center.getWorld().getSpawnLocation());
+                }
+                cancel = true;
+                plugin.setRunningGame(null);
+            }
+        }.runTaskLater(plugin, 100);
+    }
+
+    private void spawnFireworks() {
+        for (int i = 0; i < 10; i++) {
+            Firework fw = (Firework) center.getWorld().spawnEntity(center.clone().add(Math.random() * 8 - 4, 1, Math.random() * 8 - 4), EntityType.FIREWORK);
+            FireworkMeta meta = fw.getFireworkMeta();
+            meta.addEffect(FireworkEffect.builder()
+                    .withColor(Color.fromRGB(Math.random() < 0.5 ? 0 : 255, Math.random() < 0.5 ? 0 : 255, Math.random() < 0.5 ? 0 : 255))
+                    .with(FireworkEffect.Type.BALL_LARGE)
+                    .withFlicker()
+                    .withFade(Color.LIME)
+                    .build()
+            );
+            meta.setPower(1);
+            fw.setFireworkMeta(meta);
+        }
     }
 
     @Override
     public void start() {
-        started = true;
         for (Player all : plugin.getServer().getOnlinePlayers()) {
             all.playSound(all.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1, 1);
             all.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 1000000, 0, false, false, false));
+            alive.add(all);
         }
         new BukkitRunnable() {
             int t = 0;
 
             @Override
             public void run() {
-                if(cancel) {
+                if (cancel) {
                     cancel();
                     return;
                 }
@@ -184,7 +213,7 @@ public class JumpClub implements Game {
     @Override
     public void sendTitle() {
         for (Player all : plugin.getServer().getOnlinePlayers()) {
-            all.sendTitle("§a§lJump Club", "§cSneak§e and §cjump §eto avoid the spinning §4§llasers§e!", 10, 200, 10);
+            all.sendTitle("§a§lJump Club", "§cSneak§e and §cjump §eto avoid the spinning §4§llasers§e!", 10, 150, 10);
         }
     }
 }

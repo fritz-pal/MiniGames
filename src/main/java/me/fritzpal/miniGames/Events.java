@@ -1,8 +1,10 @@
 package me.fritzpal.miniGames;
 
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -24,6 +26,20 @@ public class Events implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (plugin.getRunningGame() != null) {
             plugin.getRunningGame().removePlayer(event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageEvent event){
+        if(event.getEntity() instanceof Player p){
+            if(plugin.getRunningGame() != null){
+                if(event.getCause() == EntityDamageEvent.DamageCause.LAVA){
+                    if (plugin.getRunningGame() instanceof JumpClub game) {
+                        game.eliminate(p);
+                    }
+                }
+                event.setCancelled(true);
+            }
         }
     }
 }

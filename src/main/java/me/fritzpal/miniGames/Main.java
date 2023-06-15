@@ -18,6 +18,7 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         getCommand("minigame").setExecutor(new MiniGameCommand(this));
         getCommand("minigame").setTabCompleter(new CommandCompleter());
+        getServer().getPluginManager().registerEvents(new Events(this), this);
         getLogger().info("plugin enabled!");
     }
 
