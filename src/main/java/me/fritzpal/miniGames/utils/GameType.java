@@ -20,15 +20,10 @@ public enum GameType {
     }
 
     public Game getGame(Main plugin) {
-        switch (this) {
-            case ROLL_OUT:
-                return new RollOut();
-            case DOOR_DASH:
-                return new DoorDash();
-            case JUMP_CLUB:
-                return new JumpClub(plugin);
-            default:
-                return null;
-        }
+        return switch (this) {
+            case ROLL_OUT -> new RollOut();
+            case DOOR_DASH -> new DoorDash();
+            case JUMP_CLUB -> new JumpClub(plugin);
+        };
     }
 }

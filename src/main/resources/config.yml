@@ -1,4 +1,11 @@
-gameLocations:
-  door_dash:
-  jump_club:
-  roll_out:
+door_dash:
+jump_club:
+  centerLocation:
+    ==: org.bukkit.Location
+    world: world
+    x: -208.0
+    y: 84.0
+    z: 15.0
+    pitch: 0.0
+    yaw: 0.0
+roll_out:
