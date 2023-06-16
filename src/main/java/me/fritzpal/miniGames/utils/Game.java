@@ -11,5 +11,5 @@ public interface Game {
 
     void start();
 
-    void sendTitle();
+    void eliminate(Player p);
 }

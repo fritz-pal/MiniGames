@@ -1,5 +1,6 @@
-package me.fritzpal.miniGames;
+package me.fritzpal.miniGames.games;
 
+import me.fritzpal.miniGames.Main;
 import me.fritzpal.miniGames.utils.Game;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
@@ -53,6 +54,7 @@ public class JumpClub implements Game {
     @Override
     public void setup() {
         for (Player all : plugin.getServer().getOnlinePlayers()) {
+            all.sendTitle("§a§lJump Club", "§cSneak§e and §cjump §eto avoid the spinning §4§llasers§e!", 10, 150, 10);
             all.getInventory().clear();
             all.setHealth(20);
             all.setFoodLevel(20);
@@ -100,6 +102,7 @@ public class JumpClub implements Game {
         }.runTaskTimer(plugin, 0, 1);
     }
 
+    @Override
     public void eliminate(Player p) {
         if (!alive.contains(p)) return;
         p.setGameMode(GameMode.SPECTATOR);
@@ -208,12 +211,5 @@ public class JumpClub implements Game {
                 }
             }
         }.runTaskTimer(plugin, 20, 20);
-    }
-
-    @Override
-    public void sendTitle() {
-        for (Player all : plugin.getServer().getOnlinePlayers()) {
-            all.sendTitle("§a§lJump Club", "§cSneak§e and §cjump §eto avoid the spinning §4§llasers§e!", 10, 150, 10);
-        }
     }
 }

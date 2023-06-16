@@ -39,7 +39,6 @@ public class Main extends JavaPlugin {
         runningGame = type.getGame(this);
         runningGame.setup();
         runningGame.teleportPlayers();
-        runningGame.sendTitle();
         new BukkitRunnable() {
             int time = 10;
 

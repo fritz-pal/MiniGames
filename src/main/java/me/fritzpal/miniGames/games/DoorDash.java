@@ -1,4 +1,4 @@
-package me.fritzpal.miniGames;
+package me.fritzpal.miniGames.games;
 
 import me.fritzpal.miniGames.utils.Game;
 import org.bukkit.entity.Player;
@@ -25,7 +25,7 @@ public class DoorDash implements Game {
     }
 
     @Override
-    public void sendTitle() {
+    public void eliminate(Player p) {
 
     }
 }

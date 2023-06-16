@@ -1,9 +1,9 @@
 package me.fritzpal.miniGames.utils;
 
-import me.fritzpal.miniGames.DoorDash;
-import me.fritzpal.miniGames.JumpClub;
+import me.fritzpal.miniGames.games.DoorDash;
+import me.fritzpal.miniGames.games.JumpClub;
 import me.fritzpal.miniGames.Main;
-import me.fritzpal.miniGames.RollOut;
+import me.fritzpal.miniGames.games.RollOut;
 
 public enum GameType {
     ROLL_OUT,
@@ -21,7 +21,7 @@ public enum GameType {
 
     public Game getGame(Main plugin) {
         return switch (this) {
-            case ROLL_OUT -> new RollOut();
+            case ROLL_OUT -> new RollOut(plugin);
             case DOOR_DASH -> new DoorDash();
             case JUMP_CLUB -> new JumpClub(plugin);
         };
