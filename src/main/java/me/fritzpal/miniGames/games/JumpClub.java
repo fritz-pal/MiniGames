@@ -3,10 +3,7 @@ package me.fritzpal.miniGames.games;
 import me.fritzpal.miniGames.Main;
 import me.fritzpal.miniGames.utils.Game;
 import org.bukkit.*;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,7 +25,7 @@ public class JumpClub implements Game {
     public JumpClub(Main plugin) {
         this.plugin = plugin;
         center = plugin.getConfig().getLocation("jump_club.centerLocation");
-        if (center == null) throw new NullPointerException("Center location is null!");
+        if (center == null) throw new NullPointerException("JumpClub: Center location is null!");
     }
 
     @Override
@@ -43,7 +40,7 @@ public class JumpClub implements Game {
     @Override
     public void teleportPlayers() {
         for (Player all : plugin.getServer().getOnlinePlayers()) {
-            Location loc = center.clone().add(Math.random() * 18 - 9, 0, Math.random() * 18 - 9);
+            Location loc = center.clone().add(Math.random() * 16 - 8, 0, Math.random() * 16 - 8);
             Vector dir = center.toVector().subtract(loc.toVector()).normalize();
             loc.setDirection(dir);
             all.teleport(loc);
@@ -120,7 +117,7 @@ public class JumpClub implements Game {
             all.playSound(all.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             all.sendTitle("§a§l" + winner.getName(), "§7won the game!", 10, 50, 20);
         }
-        spawnFireworks();
+        Main.spawnFireworks(center);
 
         new BukkitRunnable() {
             @Override
@@ -134,22 +131,6 @@ public class JumpClub implements Game {
                 plugin.setRunningGame(null);
             }
         }.runTaskLater(plugin, 100);
-    }
-
-    private void spawnFireworks() {
-        for (int i = 0; i < 10; i++) {
-            Firework fw = (Firework) center.getWorld().spawnEntity(center.clone().add(Math.random() * 8 - 4, 1, Math.random() * 8 - 4), EntityType.FIREWORK);
-            FireworkMeta meta = fw.getFireworkMeta();
-            meta.addEffect(FireworkEffect.builder()
-                    .withColor(Color.fromRGB(Math.random() < 0.5 ? 0 : 255, Math.random() < 0.5 ? 0 : 255, Math.random() < 0.5 ? 0 : 255))
-                    .with(FireworkEffect.Type.BALL_LARGE)
-                    .withFlicker()
-                    .withFade(Color.LIME)
-                    .build()
-            );
-            meta.setPower(1);
-            fw.setFireworkMeta(meta);
-        }
     }
 
     @Override

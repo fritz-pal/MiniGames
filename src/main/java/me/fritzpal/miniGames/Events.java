@@ -43,15 +43,4 @@ public class Events implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public void test(PlayerInteractEvent event) {
-        Player p = event.getPlayer();
-        if (event.getAction() != Action.LEFT_CLICK_AIR) return;
-        if (plugin.getRunningGame() != null) {
-            if (plugin.getRunningGame() instanceof RollOut game) {
-                game.newWall(p.getLocation());
-            }
-        }
-    }
 }
