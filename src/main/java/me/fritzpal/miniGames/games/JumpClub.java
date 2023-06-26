@@ -24,8 +24,8 @@ public class JumpClub implements Game {
 
     public JumpClub(Main plugin) {
         this.plugin = plugin;
-        center = plugin.getConfig().getLocation("jump_club.centerLocation");
-        if (center == null) throw new NullPointerException("JumpClub: Center location is null!");
+        center = plugin.getConfig().getLocation("locations.jump_club");
+        if (center == null) throw new NullPointerException("JumpClub: Location is null!");
     }
 
     @Override

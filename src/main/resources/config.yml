@@ -1,13 +1,17 @@
-door_dash:
-jump_club:
-  centerLocation:
+locations:
+  jump_club:
     ==: org.bukkit.Location
     world: world
     x: -208.0
     y: 84.0
     z: 15.0
-roll_out:
-  centerLocation:
+  roll_out:
+    ==: org.bukkit.Location
+    world: world
+    x: -208.0
+    y: 84.0
+    z: 15.0
+  door_dash:
     ==: org.bukkit.Location
     world: world
     x: -208.0

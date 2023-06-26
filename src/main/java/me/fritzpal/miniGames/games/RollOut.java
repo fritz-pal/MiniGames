@@ -22,8 +22,8 @@ public class RollOut implements Game {
 
     public RollOut(Main plugin) {
         this.plugin = plugin;
-        center = plugin.getConfig().getLocation("roll_out.centerLocation");
-        if (center == null) throw new NullPointerException("RollOut: Center location is null!");
+        center = plugin.getConfig().getLocation("locations.roll_out");
+        if (center == null) throw new NullPointerException("RollOut: Location is null!");
     }
 
     @Override
@@ -37,6 +37,7 @@ public class RollOut implements Game {
 
     private void endGame(Player winner) {
         alive.clear();
+        cancel = true;
         Bukkit.broadcastMessage("§a" + winner.getName() + " §7won the game!");
         for (Player all : plugin.getServer().getOnlinePlayers()) {
             all.playSound(all.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
@@ -50,7 +51,6 @@ public class RollOut implements Game {
                     all.setGameMode(GameMode.SURVIVAL);
                     all.teleport(center.getWorld().getSpawnLocation());
                 }
-                cancel = true;
                 plugin.setRunningGame(null);
             }
         }.runTaskLater(plugin, 100);

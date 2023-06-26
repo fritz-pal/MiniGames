@@ -22,7 +22,7 @@ public enum GameType {
     public Game getGame(Main plugin) {
         return switch (this) {
             case ROLL_OUT -> new RollOut(plugin);
-            case DOOR_DASH -> new DoorDash();
+            case DOOR_DASH -> new DoorDash(plugin);
             case JUMP_CLUB -> new JumpClub(plugin);
         };
     }

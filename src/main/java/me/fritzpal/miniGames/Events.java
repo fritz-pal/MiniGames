@@ -1,6 +1,7 @@
 package me.fritzpal.miniGames;
 
 import me.fritzpal.miniGames.games.RollOut;
+import me.fritzpal.miniGames.utils.Door;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,5 +43,11 @@ public class Events implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler
+    public void test(PlayerInteractEvent e){
+        if (e.getAction() != Action.LEFT_CLICK_AIR) return;
+        new Door(plugin, e.getPlayer().getLocation().clone().add(10, 0, 0), true);
     }
 }
