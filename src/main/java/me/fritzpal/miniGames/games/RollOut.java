@@ -86,16 +86,13 @@ public class RollOut implements Game {
         new BukkitRunnable() {
             int speed = 12;
             int t = 0;
-            boolean skip = false;
 
             @Override
             public void run() {
                 if (t % speed == 0) {
-                    if (!skip) newWall(speed);
-                    skip = false;
+                    newWall(speed);
                 }
-                if (t % 60 == 0 && speed > 5) {
-                    skip = true;
+                if (t % 60 == 0 && speed > 6) {
                     speed--;
                 }
                 t++;
