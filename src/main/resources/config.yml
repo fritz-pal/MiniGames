@@ -17,3 +17,8 @@ locations:
     x: -208.0
     y: 84.0
     z: 15.0
+door_dash:
+  number: 8  #at least 2
+  door_width: 2
+  door_height: 3
+  distance_between_lines: 5

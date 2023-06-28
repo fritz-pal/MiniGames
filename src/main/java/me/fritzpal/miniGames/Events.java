@@ -44,10 +44,4 @@ public class Events implements Listener {
             }
         }
     }
-
-    @EventHandler
-    public void test(PlayerInteractEvent e){
-        if (e.getAction() != Action.LEFT_CLICK_AIR) return;
-        new Door(plugin, e.getPlayer().getLocation().clone().add(10, 0, 0), true);
-    }
 }

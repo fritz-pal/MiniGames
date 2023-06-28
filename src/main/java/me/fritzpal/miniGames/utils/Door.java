@@ -1,10 +1,8 @@
 package me.fritzpal.miniGames.utils;
 
 import me.fritzpal.miniGames.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import me.fritzpal.miniGames.games.DoorDash;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -12,10 +10,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Door {
     private final Location location;
     private final Main plugin;
+    private final DoorDash game;
+    private final int height;
+    private final int width;
 
-    public Door(Main plugin, Location location, boolean openable) {
+    public Door(Main plugin, DoorDash game, Location location, boolean openable, int width, int height) {
         this.plugin = plugin;
+        this.game = game;
         this.location = location;
+        this.height = height;
+        this.width = width;
 
         build();
         if (openable) checkPlayers();
@@ -25,17 +29,18 @@ public class Door {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (!game.hasStarted()) return;
                 for (Player all : location.getWorld().getPlayers()) {
                     if (all.getGameMode() != org.bukkit.GameMode.ADVENTURE) continue;
                     Block block = all.getTargetBlock(null, 1);
                     if (!block.getType().equals(Material.PINK_CONCRETE)) continue;
 
-                    for (int i = 0; i < 2; i++) {
-                        for (int j = 0; j < 3; j++) {
-                            if (location.clone().add(i, j, 0).getBlock().getLocation().equals(block.getLocation())) {
-                                Bukkit.broadcastMessage("§e1st §c§ldoor opened!");
+                    for (int i = 0; i < width; i++) {
+                        for (int j = 0; j < height; j++) {
+                            if (location.clone().add(0, j, i).getBlock().getLocation().equals(block.getLocation())) {
+                                Bukkit.broadcastMessage("§a§lA§c§l door§a§l was opened!");
                                 Main.broadcastSound(Sound.BLOCK_IRON_DOOR_OPEN);
-                                Main.broadcastSound(Sound.BLOCK_NOTE_BLOCK_PLING);
+                                Main.broadcastSound(Sound.BLOCK_NOTE_BLOCK_CHIME);
                                 spawnParticles();
                                 remove();
                                 cancel();
@@ -49,25 +54,25 @@ public class Door {
     }
 
     private void spawnParticles() {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                location.getWorld().spawnParticle(org.bukkit.Particle.FLAME, location.clone().add(i + 0.5, j + 0.5, 0.5), 10, 0.5f, 0.5f, 0.5f, 0.1f);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                location.getWorld().spawnParticle(Particle.FLAME, location.clone().add(0.5, j + 0.5, i + 0.5), 10, 0.5f, 0.5f, 0.5f, 0.1f);
             }
         }
     }
 
     private void build() {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                location.clone().add(i, j, 0).getBlock().setType(Material.PINK_CONCRETE);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                location.clone().add(0, j, i).getBlock().setType(Material.PINK_CONCRETE);
             }
         }
     }
 
     public void remove() {
-        for (int i = 0; i < 2; i++) {
-            for (int j = 0; j < 3; j++) {
-                location.clone().add(i, j, 0).getBlock().setType(Material.AIR);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                location.clone().add(0, j, i).getBlock().setType(Material.AIR);
             }
         }
     }
