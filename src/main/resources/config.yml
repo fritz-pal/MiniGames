@@ -22,3 +22,5 @@ door_dash:
   door_width: 2
   door_height: 3
   distance_between_lines: 5
+jump_club:
+  length: 12

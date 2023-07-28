@@ -16,6 +16,7 @@ public class JumpClub implements Game {
     private final Main plugin;
     private final Location center;
     private final List<Player> alive = new ArrayList<>();
+    private final int length;
     private boolean topBarEnabled = false;
     private boolean topBarDamage = false;
     private double speedBottom = 90;
@@ -26,6 +27,8 @@ public class JumpClub implements Game {
         this.plugin = plugin;
         center = plugin.getConfig().getLocation("locations.jump_club");
         if (center == null) throw new NullPointerException("JumpClub: Location is null!");
+        length = plugin.getConfig().getInt("jump_club.length");
+        if (length <= 0) throw new IllegalArgumentException("JumpClub: Length is zero or negative!");
     }
 
     @Override
@@ -68,13 +71,20 @@ public class JumpClub implements Game {
                     return;
                 }
 
+                //eliminate players in water
+                for (Player all : plugin.getServer().getOnlinePlayers()) {
+                    if (all.getGameMode() != GameMode.ADVENTURE) continue;
+                    if (all.isInWater()) eliminate(all);
+                }
+
                 //bottom bar
                 t0 += Math.PI / speedBottom;
-                for (double r = 0; r < 12; r += 0.3) {
+                for (double r = 0; r < length; r += 0.3) {
                     double x = r * Math.sin(t0);
                     double z = r * Math.cos(t0);
                     center.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, center.clone().add(x, 0.3, z), 3, 0.2, 0.2, 0.2, 0);
                     for (Player all : plugin.getServer().getOnlinePlayers()) {
+                        if (all.getWorld() != center.getWorld()) continue;
                         if (all.getLocation().distance(center.clone().add(x, 0, z)) < 1) {
                             eliminate(all);
                         }
@@ -83,12 +93,13 @@ public class JumpClub implements Game {
                 if (!topBarEnabled) return;
                 //top bar
                 t1 += Math.PI / speedTop;
-                for (double r = 0; r < 12; r += 0.3) {
+                for (double r = 0; r < length; r += 0.3) {
                     double x = r * Math.sin(t1);
                     double z = r * Math.cos(t1);
                     center.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, center.clone().add(x, 2, z), 3, 0.2, 0.2, 0.2, 0);
                     if (!topBarDamage) continue;
                     for (Player all : plugin.getServer().getOnlinePlayers()) {
+                        if (all.getWorld() != center.getWorld()) continue;
                         if (all.isSneaking() && all.isOnGround()) continue;
                         if (all.getLocation().distance(center.clone().add(x, 1, z)) < 1.5) {
                             eliminate(all);
